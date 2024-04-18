@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+      - node
+    volumes:
+      - /home/me/docker_compose/nginx:/usr/share/nginx/html
+  node:
+    container_name: nodejs
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=lovethepoor
+      - DB_NAME=tudolist
+      - DB_PORT=3307
+  db:
+    image: mysql:8.0.22
+    container_name: mysqlDB
+    volumes:
+      - /home/me/db:/var/lib/mysql
+    ports:
+      - "3307:3307"
+    environment:
+      - MYSQL_DATABASE=tudolist
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=lovethepoor
+
